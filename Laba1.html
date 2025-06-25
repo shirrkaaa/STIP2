@@ -68,53 +68,63 @@
             <h2>Завдання:</h2>
             <p>
 1. Отримати за допомогою методу GET головну сторінку вашого документа на сервері (1 скріншот);
-<br>
+<br><br>
 2. Визначте версію специфікації HTTP, яку підтримує сервер, а також
 версію та специфікацію програмного забезпечення, що працює на сервері.
 Визначте також дату та час, у який було сформовано відповідь, та час останньої
-модифікації головної сторінки сервера. (1 скріншот);<br>
+модифікації головної сторінки сервера. (1 скріншот);<br><br>
 3. Запитайте будь-який неіснуючий документ на сервері та зверніть увагу
-на відповідь, повернений сервером. (1 скріншот);<br>
+на відповідь, повернений сервером. (1 скріншот);<br><br>
 4. Отримайте будь-які два документи, на які є посилання в отриманому
-документі; (2 скріншоти);<br>
+документі; (2 скріншоти);<br><br>
 5. Отримайте перші п&#39;ятнадцять байт будь-якого документа із віртуального
 каталогу на сервері. Визначте за поверненою відповіддю повний розмір
 запитаного документа. Отримайте останні сім байт цього документа. (2
-скріншоти);<br>
+скріншоти);<br><br>
 6. Надішліть запити за допомогою методів PUT та DELETE на сервер. (2
-скріншоти);<br>
+скріншоти);<br><br>
 7. За допомогою методу OPTIONS запитайте інформацію про параметри
 сервера в цілому, про параметри кореневого каталогу сервера. Зверніть увагу на
 список методів, що підтримуються сервером для кожного каталогу. (1
-скріншот);<br>
+скріншот);<br><br>
 8. Надішліть два різні запити за допомогою методу TRACE на сервер і
 зверніть увагу на відповіді, повернені сервером. (2 скріншоти);
             </p><br />
 
         </div>
         <div id="code" class="content-section">
-            <pre>
-&lt;!DOCTYPE html&gt;
-&lt;html lang=&quot;uk&quot;&gt;
-&lt;head&gt;
-    &lt;meta charset=&quot;UTF-8&quot;&gt;
-    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
-    &lt;title&gt;Фреймова структура&lt;/title&gt;
-&lt;/head&gt;
-&lt;frameset cols=&quot;20%, 80%&quot;&gt;
-    &lt;!-- Лівий вертикальний фрейм --&gt;
-    &lt;frame src=&quot;menu.html&quot; name=&quot;menuFrame&quot;&gt;
+            <p>1, 2. GET / HTTP/1.1<br>
+Host: localhost</p>
 
-        &lt;frameset rows=&quot;30%, *&quot;&gt;
-            &lt;!-- Верхній правий фрейм --&gt;
-            &lt;frame src=&quot;header.html&quot; name=&quot;headerFrame&quot;&gt;
-                &lt;!-- Нижній правий фрейм  --&gt;
-            &lt;frame src=&quot;content.html&quot; name=&quot;contentFrame&quot;&gt;
-        &lt;/frameset&gt;
-&lt;/frameset&gt;
-&lt;/html&gt;
+<p>3. GET /blablabla.html HTTP/1.1<br>
+Host: localhost</p>
 
-    </pre>
+<p>4. GET /content.html HTTP/1.1<br>
+Host: localhost</p>
+
+<p>GET /script.js HTTP/1.1<br>
+Host: localhost</p>
+
+<p>5. GET /script.js HTTP/1.1<br>
+Host: localhost<br>
+Range: bytes=0-14</p>
+
+<p>GET /script.js HTTP/1.1<br>
+Host: localhost<br>
+Range: bytes=499-505</p>
+
+<p>6. PUT /content.html HTTP/1.1<br>
+Host: localhost</p>
+
+<p>DELETE /content.html HTTP/1.1<br>
+Host: localhost</p>
+
+<p>7. OPTIONS / HTTP/1.1<br>
+Host: localhost</p>
+
+<p>8. TRACE / HTTP/1.1<br>
+Host: localhost</p>
+
         </div>
         <iframe id="resultFrame" class="content-section"></iframe>
     </div>
