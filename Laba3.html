@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Лабораторна робота №3</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            height: 100vh;
+        }
+
+        #menuFrame {
+            width: 20%;
+            background: #0D47A1;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+        }
+
+            #menuFrame button {
+                width: 100%;
+                padding: 10px;
+                margin: 5px 0;
+                border: none;
+                background: #1976D2;
+                color: white;
+                font-size: 16px;
+                cursor: pointer;
+            }
+
+                #menuFrame button:hover {
+                    background: #2196F3;
+                }
+
+        #contentFrame {
+            width: 80%;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .content-section {
+            display: none;
+        }
+
+        #umova {
+            display: block;
+        }
+
+        #resultFrame {
+            width: 100%;
+            height: 100%; 
+            border: none; 
+        }
+    </style>
+</head>
+<body>
+    <div id="menuFrame">
+        <button onclick="showSection('umova')">Умова</button>
+        <button onclick="showResultPage('3.html')">Результат</button>
+        <button onclick="showSection('code')">Код</button>
+    </div>
+
+    <div id="contentFrame">
+        <div id="umova" class="content-section">
+            <h1>Лабораторна робота №1</h1>
+            <h2>Завдання:</h2>
+            <p>
+1. Створити HTML-сторінку з формою для введення даних.
+<br><br>
+2. Використовувати AJAX для надсилання та отримання даних без
+перезавантаження сторінки.<br><br>
+3. Отримані дані повинні оброблятися у форматі JSON.<br><br>
+4. Для кожного варіанту роботи передбачити власний серверний запит.<br><br>
+            </p><br />
+
+        </div>
+        <div id="code" class="content-section">
+            <p>
+<pre><code>
+document.addEventListener("DOMContentLoaded", () =&gt; {
+  loadUserOrders();
+});
+
+async function loadUserOrders() {
+  const output = document.getElementById("output");
+
+  try {
+    const usersResponse = await fetch('https://jsonplaceholder.typicode.com/users');
+    const users = await usersResponse.json();
+
+    const postsResponse = await fetch('https://jsonplaceholder.typicode.com/posts');
+    const posts = await postsResponse.json();
+
+    output.innerHTML = '';
+
+    for (const user of users) {
+      const userDiv = document.createElement('div');
+      userDiv.className = 'user';
+      userDiv.innerHTML = `&lt;strong&gt;${user.name}&lt;/strong&gt; (${user.email})`;
+
+      const userOrders = posts.filter(post =&gt; post.userId === user.id);
+
+      if (userOrders.length === 0) {
+        userDiv.innerHTML += '&lt;div class="order"&gt;Немає замовлень.&lt;/div&gt;';
+      } else {
+        for (const order of userOrders) {
+          const orderDiv = document.createElement('div');
+          orderDiv.className = 'order';
+          orderDiv.textContent = `Замовлення #${order.id}: ${order.title}`;
+          userDiv.appendChild(orderDiv);
+        }
+      }
+
+      output.appendChild(userDiv);
+    }
+  } catch (error) {
+    output.innerHTML = 'Помилка при отриманні даних.';
+    console.error('Помилка:', error);
+  }
+}
+</code></pre>
+</p>
+
+        <iframe id="resultFrame" class="content-section"></iframe>
+    </div>
+
+    <script>
+        function showSection(sectionId) {
+            const sections = document.querySelectorAll('.content-section');
+            sections.forEach(section => section.style.display = 'none');
+            document.getElementById(sectionId).style.display = 'block';
+        }
+
+        function showResultPage(url) {
+            const sections = document.querySelectorAll('.content-section');
+            sections.forEach(section => section.style.display = 'none');
+            document.getElementById('resultFrame').style.display = 'block';
+            document.getElementById('resultFrame').src = url;
+        }
+    </script>
+</body>
+</html>
