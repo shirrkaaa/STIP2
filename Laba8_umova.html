@@ -1,0 +1,66 @@
+<div class="code-block">
+   <h4>index.js</h4><br><br>
+  <pre><code>
+const functions = require('firebase-functions');
+const admin = require('firebase-admin');
+
+admin.initializeApp();
+
+exports.webhook = functions.https.onRequest(async (req, res) => {
+  try {
+    console.log('Received request:', {
+      method: req.method,
+      headers: req.headers,
+      body: req.body,
+    });
+
+    if (req.method !== 'POST') {
+      console.warn('Method not allowed:', req.method);
+      return res.status(405).send({ error: 'Method Not Allowed' });
+    }
+
+    if (!req.body || Object.keys(req.body).length === 0) {
+      console.warn('Empty request body');
+      return res.status(400).send({ error: 'Bad Request: empty body' });
+    }
+
+    console.log('Webhook payload:', req.body);
+
+    res.status(200).send({ status: 'success', dataReceived: req.body });
+  } catch (error) {
+    console.error('Error processing webhook:', error);
+    res.status(500).send({ error: 'Internal Server Error' });
+  }
+});
+</code></pre><br><br>
+  <h4>package.json</h4><br><br>
+  <pre><code>
+{
+  &quot;name&quot;: &quot;functions&quot;,
+  &quot;description&quot;: &quot;Cloud Functions for Firebase&quot;,
+  &quot;scripts&quot;: {
+    &quot;lint&quot;: &quot;eslint .&quot;,
+    &quot;serve&quot;: &quot;firebase emulators:start --only functions&quot;,
+    &quot;shell&quot;: &quot;firebase functions:shell&quot;,
+    &quot;start&quot;: &quot;npm run shell&quot;,
+    &quot;deploy&quot;: &quot;firebase deploy --only functions&quot;,
+    &quot;logs&quot;: &quot;firebase functions:log&quot;
+  },
+  &quot;engines&quot;: {
+    &quot;node&quot;: &quot;22&quot;
+  },
+  &quot;main&quot;: &quot;index.js&quot;,
+  &quot;dependencies&quot;: {
+    &quot;firebase-admin&quot;: &quot;^12.7.0&quot;,
+    &quot;firebase-functions&quot;: &quot;^6.3.2&quot;
+  },
+  &quot;devDependencies&quot;: {
+    &quot;eslint&quot;: &quot;^8.15.0&quot;,
+    &quot;eslint-config-google&quot;: &quot;^0.14.0&quot;,
+    &quot;firebase-functions-test&quot;: &quot;^3.1.0&quot;
+  },
+  &quot;private&quot;: true
+}
+</code></pre>
+  
+</div>
