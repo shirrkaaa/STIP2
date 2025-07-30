@@ -1,0 +1,30 @@
+<div class="code-block">
+   <p>
+  `// GET`<br>
+  `app.get('/api/random-animal', (req, res) => {`<br>
+  `  const animals = ['котик', 'песик', 'пташка', 'хом’ячок', 'черепаха'];`<br>
+  `  const randomIndex = Math.floor(Math.random() * animals.length);`<br>
+  `  const animal = animals[randomIndex];`<br>
+  `  res.json({ animal });`<br>
+  `});`
+</p>
+
+<p>
+  `// POST`<br>
+  `app.post('/api/reverse-number', (req, res) => {`<br>
+  `  const { number } = req.body;`<br>
+  `<br>`
+  `  if (number === undefined || number === null) {`<br>
+  `    return res.status(400).json({ error: 'Число обов’язкове' });`<br>
+  `  }`<br>
+  `<br>`
+  `  const reversedStr = String(number)`<br>
+  `    .split('')`<br>
+  `    .reverse()`<br>
+  `    .join('')`<br>
+  `    .replace(/^0+/, '') || '0';`<br>
+  `<br>`
+  `  res.json({ reversed_number: reversedStr });`<br>
+  `});`
+</p>
+</div>
