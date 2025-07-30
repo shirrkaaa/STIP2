@@ -1,40 +1,40 @@
 <div class="code-block">
     <p>
-  `document.addEventListener("DOMContentLoaded", () => {`<br>
-  `  loadUserOrders();`<br>
-  `});`
+  document.addEventListener("DOMContentLoaded", () => {`<br>
+    loadUserOrders();`<br>
+  });
 </p>
 
 <p>
-  `async function loadUserOrders() {`<br>
-  `  const output = document.getElementById("output");`<br>
-  `  try {`<br>
-  `    const usersResponse = await fetch('https://jsonplaceholder.typicode.com/users');`<br>
-  `    const users = await usersResponse.json();`<br>
-  `    const postsResponse = await fetch('https://jsonplaceholder.typicode.com/posts');`<br>
-  `    const posts = await postsResponse.json();`<br>
-  `    output.innerHTML = '';`<br>
-  `    for (const user of users) {`<br>
-  `      const userDiv = document.createElement('div');`<br>
-  `      userDiv.className = 'user';`<br>
-  `      userDiv.innerHTML = `${user.name} (${user.email})`;`<br>
-  `      const userOrders = posts.filter(post => post.userId === user.id);`<br>
-  `      if (userOrders.length === 0) {`<br>
-  `        userDiv.innerHTML += 'Немає замовлень.';`<br>
-  `      } else {`<br>
-  `        for (const order of userOrders) {`<br>
-  `          const orderDiv = document.createElement('div');`<br>
-  `          orderDiv.className = 'order';`<br>
-  `          orderDiv.textContent = `Замовлення #${order.id}: ${order.title}`;`<br>
-  `          userDiv.appendChild(orderDiv);`<br>
-  `        }`<br>
-  `      }`<br>
-  `      output.appendChild(userDiv);`<br>
-  `    }`<br>
-  `  } catch (error) {`<br>
-  `    output.innerHTML = 'Помилка при отриманні даних.';`<br>
-  `    console.error('Помилка:', error);`<br>
-  `  }`<br>
-  `}`
+  async function loadUserOrders() {`<br>
+    const output = document.getElementById("output");`<br>
+    try {`<br>
+      const usersResponse = await fetch('https://jsonplaceholder.typicode.com/users');`<br>
+      const users = await usersResponse.json();`<br>
+      const postsResponse = await fetch('https://jsonplaceholder.typicode.com/posts');`<br>
+      const posts = await postsResponse.json();`<br>
+      output.innerHTML = '';`<br>
+      for (const user of users) {`<br>
+        const userDiv = document.createElement('div');`<br>
+        userDiv.className = 'user';`<br>
+        userDiv.innerHTML = `${user.name} (${user.email})`;`<br>
+        const userOrders = posts.filter(post => post.userId === user.id);`<br>
+        if (userOrders.length === 0) {`<br>
+          userDiv.innerHTML += 'Немає замовлень.';`<br>
+        } else {`<br>
+          for (const order of userOrders) {`<br>
+           const orderDiv = document.createElement('div');`<br>
+            orderDiv.className = 'order';`<br>
+            orderDiv.textContent = `Замовлення #${order.id}: ${order.title}`;`<br>
+            userDiv.appendChild(orderDiv);`<br>
+          }`<br>
+        }`<br>
+        output.appendChild(userDiv);`<br>
+      }`<br>
+    } catch (error) {`<br>
+      output.innerHTML = 'Помилка при отриманні даних.';`<br>
+      console.error('Помилка:', error);`<br>
+    }<br>
+  }
 </p>
 </div>
