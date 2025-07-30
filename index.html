@@ -3,17 +3,230 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Фреймова структура</title>
-</head>
-<frameset cols="20%, 80%">
-    <!-- Лівий вертикальний фрейм -->
-    <frame src="menu.html" name="menuFrame" scrolling="yes">
+    <title>Лабораторні роботи</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            height: 100vh;
+            overflow: hidden; /* Запобігаємо скролінгу всієї сторінки */
+        }
 
-        <frameset rows="30%, *">
-            <!-- Верхній правий фрейм -->
-            <frame src="header.html" name="headerFrame">
-                <!-- Нижній правий фрейм  -->
-            <frame src="content.html" name="contentFrame">
-        </frameset>
-</frameset>
+        #menu-container {
+            flex: 0 0 20%; /* Ліва колонка 20% ширини */
+            background-color: #f0f0f0;
+            padding: 10px;
+            box-sizing: border-box;
+            overflow-y: auto; /* Скролінг для меню, якщо багато кнопок */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start; /* Вирівнювання кнопок зверху */
+            border-right: 1px solid #ccc;
+        }
+
+        #main-content-area {
+            flex: 1; /* Права колонка займає решту простору */
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        #header-container {
+            flex: 0 0 30%; /* Верхня частина правої колонки 30% висоти */
+            background-color: #e0e0e0;
+            padding: 10px;
+            box-sizing: border-box;
+            border-bottom: 1px solid #ccc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #content-display-area {
+            flex: 1; /* Нижня частина правої колонки займає решту простору */
+            padding: 20px;
+            box-sizing: border-box;
+            overflow-y: auto; /* Скролінг для вмісту */
+            background-color: #fff;
+        }
+
+        /* Стилі для кнопок меню (взяті з menu.html) */
+        .menu-button {
+            background: linear-gradient(135deg, #2c6b2f, #1e5c25);
+            color: white;
+            font-size: 12px;
+            padding: 15px 30px;
+            margin: 10px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+            width: 200px;
+            max-width: 90%;
+        }
+
+        .menu-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+            color: #f1e100;
+        }
+
+        .menu-button:active {
+            transform: translateY(2px);
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Стилі для кнопок всередині контенту (якщо потрібні) */
+        .content-nav-button {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: none;
+            background: #1976D2;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .content-nav-button:hover {
+            background: #2196F3;
+        }
+
+        /* Стилі для iframe, якщо завантажуємо PDF */
+        .pdf-viewer {
+            width: 100%;
+            height: 80vh; /* Змінив на vh, щоб він був достатньо високим відносно вікна перегляду */
+            border: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="menu-container">
+        <button class="menu-button" onclick="loadLab('Laba1')">Лабораторна робота 1</button>
+        <button class="menu-button" onclick="loadLab('Laba2')">Лабораторна робота 2</button>
+        <button class="menu-button" onclick="loadLab('Laba3')">Лабораторна робота 3</button>
+        <button class="menu-button" onclick="loadLab('Laba4')">Лабораторна робота 4</button>
+        <button class="menu-button" onclick="loadLab('Laba5')">Лабораторна робота 5</button>
+        <button class="menu-button" onclick="loadLab('Laba6')">Лабораторна робота 6</button>
+        <button class="menu-button" onclick="loadLab('Laba7')">Лабораторна робота 7</button>
+        <button class="menu-button" onclick="loadLab('Laba8')">Лабораторна робота 8</button>
+        <button class="menu-button" onclick="loadLab('Laba9')">Лабораторна робота 9</button>
+        <button class="menu-button" onclick="loadLab('Laba10')">Лабораторна робота 10</button>
+    </div>
+
+    <div id="main-content-area">
+        <div id="header-container">
+            <h1>Лабораторні роботи з STIP2</h1>
+        </div>
+        <div id="content-display-area">
+            <p>Оберіть лабораторну роботу з меню ліворуч.</p>
+        </div>
+    </div>
+
+    <script>
+        // Об'єкт для зберігання даних про кожну лабораторну
+        // Зверніть увагу, що 'condition', 'result', 'code' тепер можуть містити як HTML, так і PDF.
+        // PDF вказуємо з розширенням .pdf, HTML без.
+        const labContent = {
+            'Laba1': {
+                title: 'Лабораторна робота №1',
+                sections: [
+                    { name: 'Умова', type: 'html', file: 'Laba1_umova.html' }, // Нові файли для умов
+                    { name: 'Результат', type: 'pdf', file: 'Result11.pdf' },
+                    { name: 'Код', type: 'html', file: 'Laba1_code.html' } // Нові файли для коду
+                ]
+            },
+            'Laba2': {
+                title: 'Лабораторна робота №2',
+                sections: [
+                    { name: 'Умова', type: 'html', file: 'Laba2_umova.html' },
+                    { name: 'Результат', type: 'pdf', file: 'Result22.pdf' },
+                    { name: 'Код', type: 'html', file: 'Laba2_code.html' }
+                ]
+            },
+            // Додайте інші лабораторні роботи за аналогією
+            'Laba3': {
+                title: 'Лабораторна робота №3',
+                sections: [
+                    { name: 'Умова', type: 'html', file: 'Laba3_umova.html' },
+                    { name: 'Результат', type: 'pdf', file: 'Result33.pdf' },
+                    { name: 'Код', type: 'html', file: 'Laba3_code.html' }
+                ]
+            }
+            // ... і так далі для Laba4 - Laba10
+        };
+
+        // Функція для завантаження вмісту лабораторної роботи
+        async function loadLab(labId) {
+            const contentDisplayArea = document.getElementById('content-display-area');
+            const headerContainer = document.getElementById('header-container');
+            const lab = labContent[labId];
+
+            if (!lab) {
+                contentDisplayArea.innerHTML = '<p>Лабораторна робота не знайдена.</p>';
+                headerContainer.innerHTML = '<h1>Помилка</h1>';
+                return;
+            }
+
+            headerContainer.innerHTML = `<h1>${lab.title}</h1>`;
+
+            // Створюємо кнопки для розділів (Умова, Результат, Код)
+            let navButtonsHtml = '<div style="display:flex; justify-content:center; margin-bottom: 20px;">';
+            lab.sections.forEach((section, index) => {
+                navButtonsHtml += `<button class="content-nav-button" onclick="displaySection('${labId}', ${index})">${section.name}</button>`;
+            });
+            navButtonsHtml += '</div>';
+
+            contentDisplayArea.innerHTML = navButtonsHtml; // Додаємо кнопки
+
+            // Завантажуємо перший розділ за замовчуванням
+            displaySection(labId, 0);
+        }
+
+        // Функція для відображення конкретного розділу лабораторної роботи
+        async function displaySection(labId, sectionIndex) {
+            const contentDisplayArea = document.getElementById('content-display-area');
+            const lab = labContent[labId];
+            const section = lab.sections[sectionIndex];
+
+            if (!section) {
+                contentDisplayArea.innerHTML += '<p>Розділ не знайдено.</p>';
+                return;
+            }
+
+            // Очищаємо вміст, але залишаємо кнопки навігації
+            const navButtons = contentDisplayArea.querySelector('div');
+            contentDisplayArea.innerHTML = '';
+            contentDisplayArea.appendChild(navButtons);
+
+            if (section.type === 'pdf') {
+                // Якщо це PDF, вставляємо iframe
+                contentDisplayArea.innerHTML += `<iframe class="pdf-viewer" src="${section.file}"></iframe>`;
+            } else if (section.type === 'html') {
+                // Якщо це HTML, завантажуємо його вміст
+                try {
+                    const response = await fetch(section.file);
+                    if (!response.ok) {
+                        throw new Error(`Не вдалося завантажити ${section.file}: ${response.statusText}`);
+                    }
+                    const htmlContent = await response.text();
+                    contentDisplayArea.innerHTML += htmlContent;
+                } catch (error) {
+                    contentDisplayArea.innerHTML += `<p>Помилка завантаження: ${error.message}</p>`;
+                    console.error('Fetch error:', error);
+                }
+            }
+        }
+
+        // Завантажуємо початковий контент при старті
+        document.addEventListener('DOMContentLoaded', () => {
+            // Можете завантажити першу лабу за замовчуванням або залишити пустим
+            // loadLab('Laba1');
+        });
+    </script>
+
+</body>
 </html>
