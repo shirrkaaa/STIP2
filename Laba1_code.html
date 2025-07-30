@@ -5,4 +5,38 @@
     <p>3. GET /blablabla.html HTTP/1.1<br>
     Host: localhost</p>
 
-    </div>
+    <p>4. GET /content.html HTTP/1.1<br>
+    Host: localhost</p>
+
+    <p>4. GET /script.js HTTP/1.1<br>
+    Host: localhost</p>
+
+    <p>5. GET /virtual/script.js HTTP/1.1<br>
+    Host: localhost<br>
+    Range: bytes=0-14</p>
+
+    <p>5. GET /virtual/script.js HTTP/1.1<br>
+    Host: localhost<br>
+    Range: bytes=-7</p>
+
+    <p>6. PUT /newfile.html HTTP/1.1<br>
+    Host: localhost<br>
+    Content-Type: text/plain<br>
+    Content-Length: 13<br><br>
+    Hello, world!</p>
+
+    <p>6. DELETE /content.html HTTP/1.1<br>
+    Host: localhost</p>
+
+    <p>7. OPTIONS * HTTP/1.1<br>
+    Host: localhost</p>
+
+    <p>7. OPTIONS / HTTP/1.1<br>
+    Host: localhost</p>
+
+    <p>8. TRACE / HTTP/1.1<br>
+    Host: localhost</p>
+
+    <p>8. TRACE /blablabla.html HTTP/1.1<br>
+    Host: localhost</p>
+</div>
