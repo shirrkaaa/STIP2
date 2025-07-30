@@ -1,0 +1,187 @@
+<div class="code-block">
+  <h4>server.js</h4><br>
+   <p>
+  `const express = require("express");`<br>
+  `const cors = require("cors");`<br>
+  `const jwt = require("jsonwebtoken");`<br>
+  `const bcrypt = require("bcryptjs");`<br>
+  `const http = require("http");`<br>
+  `const { Server } = require("socket.io");`<br>
+  `const swaggerJsDoc = require("swagger-jsdoc");`<br>
+  `const swaggerUi = require("swagger-ui-express");`<br>
+  `<br>`
+  `const app = express();`<br>
+  `<br>`
+  `app.use(cors());`<br>
+  `app.use(express.json());`
+</p>
+
+<p>
+  `const users = [];`<br>
+  `const requests = [];`<br>
+  `let currentUserId = 1;`<br>
+  `let currentRequestId = 1;`
+</p>
+
+<p>
+  `const JWT_SECRET = "verysecretkey";`
+</p>
+
+<p>
+  `// Swagger`<br>
+  `const swaggerOptions = {`<br>
+  `  swaggerDefinition: {`<br>
+  `    openapi: "3.0.0",`<br>
+  `    info: {`<br>
+  `      title: "Support API",`<br>
+  `      version: "1.0.0",`<br>
+  `      description: "API для системи підтримки без бази даних",`<br>
+  `    },`<br>
+  `    components: {`<br>
+  `      securitySchemes: {`<br>
+  `        bearerAuth: {`<br>
+  `          type: "http",`<br>
+  `          scheme: "bearer",`<br>
+  `        },`<br>
+  `      },`<br>
+  `    },`<br>
+  `    security: [{ bearerAuth: [] }],`<br>
+  `  },`<br>
+  `  apis: ["./server.js"],`<br>
+  `};`<br>
+  `const swaggerDocs = swaggerJsDoc(swaggerOptions);`<br>
+  `app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));`
+</p>
+
+<p>
+  `// Middleware JWT `<br>
+  `function authMiddleware(req, res, next) {`<br>
+  `  const authHeader = req.headers.authorization;`<br>
+  `  if (!authHeader) return res.status(401).json({ message: "Немає токена" });`<br>
+  `<br>`
+  `  const token = authHeader.split(" ")[1];`<br>
+  `  try {`<br>
+  `    const decoded = jwt.verify(token, JWT_SECRET);`<br>
+  `    req.userId = decoded.id;`<br>
+  `    next();`<br>
+  `  } catch (e) {`<br>
+  `    res.status(403).json({ message: "Невірний токен" });`<br>
+  `  }`<br>
+  `}`
+</p>
+
+<p>
+  `app.post("/register", async (req, res) => {`<br>
+  `  const { username, email, password } = req.body;`<br>
+  `  const hashed = await bcrypt.hash(password, 10);`<br>
+  `  const user = { id: currentUserId++, username, email, password: hashed };`<br>
+  `  users.push(user);`<br>
+  `  res.json({ message: "Користувач зареєстрований" });`<br>
+  `});`
+</p>
+
+<p>
+  `app.post("/login", async (req, res) => {`<br>
+  `  const { email, password } = req.body;`<br>
+  `  const user = users.find(u => u.email === email);`<br>
+  `  if (!user || !(await bcrypt.compare(password, user.password))) {`<br>
+  `    return res.status(401).json({ message: "Невірний email або пароль" });`<br>
+  `  }`<br>
+  `  const token = jwt.sign({ id: user.id }, JWT_SECRET, { expiresIn: "1h" });`<br>
+  `  res.json({ token });`<br>
+  `});`
+</p>
+
+<p>
+  `app.post("/requests", authMiddleware, (req, res) => {`<br>
+  `  const request = {`<br>
+  `    id: currentRequestId++,`<br>
+  `    userId: req.userId,`<br>
+  `    message: req.body.message,`<br>
+  `    status: "нове",`<br>
+  `    createdAt: new Date().toISOString(),`<br>
+  `  };`<br>
+  `  requests.push(request);`<br>
+  `  res.json({ message: "Заявку створено", request });`<br>
+  `});`
+</p>
+
+<p>
+  `app.get("/requests", authMiddleware, (req, res) => {`<br>
+  `  const userRequests = requests.filter(r => r.userId === req.userId);`<br>
+  `  res.json(userRequests);`<br>
+  `});`
+</p>
+
+<p>
+  `app.patch("/requests/:id/status", (req, res) => {`<br>
+  `  const request = requests.find(r => r.id == req.params.id);`<br>
+  `  if (!request) return res.status(404).json({ message: "Заявка не знайдена" });`<br>
+  `  request.status = req.body.status;`<br>
+  `  res.json({ message: "Статус оновлено", request });`<br>
+  `});`
+</p>
+
+<p>
+  `const PORT = 5000;`<br>
+  `const expressServer = http.createServer(app);`<br>
+  `expressServer.listen(PORT, () => console.log(`API на http://localhost:${PORT}`));`
+</p>
+
+<p>
+  `// Окремий WebSocket`<br>
+  `const wsServer = http.createServer();`<br>
+  `const io = new Server(wsServer, {`<br>
+  `  cors: { origin: "*" },`<br>
+  `});`
+</p>
+
+<p>
+  `io.on("connection", (socket) => {`<br>
+  `  console.log("Користувач підключився до чату");`<br>
+  `  socket.on("message", (data) => {`<br>
+  `    io.emit("message", data);`<br>
+  `  });`<br>
+  `});`
+</p>
+
+<p>
+  `wsServer.listen(5051, () => console.log("WebSocket працює на ws://localhost:5051"));`
+</p><br><br><br>
+  <h4>chat.html</h4><br>
+
+<pre><code>
+&lt;!DOCTYPE html&gt;
+&lt;html lang="uk"&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8" /&gt;
+  &lt;title&gt;WebSocket Чат&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h2&gt;WebSocket Чат&lt;/h2&gt;
+  &lt;input id="msg" placeholder="Введи повідомлення..." /&gt;
+  &lt;button onclick="send()"&gt;Надіслати&lt;/button&gt;
+  &lt;pre id="log"&gt;&lt;/pre&gt;
+
+  &lt;script&gt;
+    const socket = new WebSocket("ws://localhost:5051");
+
+    socket.onopen = () => log("З'єднання встановлено");
+    socket.onmessage = (e) => log("Отримано: " + e.data);
+    socket.onerror = (e) => log("Помилка: " + (e.message || 'невідома помилка'));
+
+    function send() {
+      const text = document.getElementById("msg").value;
+      const data = { from: "Anna", text };
+      socket.send(JSON.stringify(data));
+    }
+
+    function log(msg) {
+      document.getElementById("log").textContent += msg + "\n";
+    }
+  &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+  
+</div>
